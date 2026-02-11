@@ -14,16 +14,11 @@ builder.Services
     .AddDbContext<FunctionAppDbContext>(options =>
         options.UseSqlServer(Environment.GetEnvironmentVariable("SqlConnectionString")))
     .AddScoped<EmployeeService>()
+    .AddScoped<MigrationService>()
     .AddApplicationInsightsTelemetryWorkerService()
     .ConfigureFunctionsApplicationInsights();
 
 var app = builder.Build();
-
-using (var scope = app.Services.CreateScope())
-{
-    var db = scope.ServiceProvider.GetRequiredService<FunctionAppDbContext>();
-    db.Database.Migrate();
-}
 
 app.Run();
 
